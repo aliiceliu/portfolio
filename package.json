@@ -1,0 +1,10 @@
+{
+  "name": "aliceliudesign.framer.website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static HTML clone of https://aliceliudesign.framer.website/",
+  "scripts": {
+    "preview": "npx serve .",
+    "start": "npx serve ."
+  }
+}
