@@ -205,7 +205,7 @@
       ["Work", "./index.html"],
       ["About", "./about.html"],
       ["Play", "./play.html"],
-      ["Resume", "https://drive.google.com/file/d/1ZGNC6DuNuMgQiSELyw1xeAFKpGKFj_lf/view?usp=sharing"],
+      ["Resume", "https://drive.google.com/file/d/10OwSysfJ5Ad-Htz0iCXrmG625JjAbVpe/view?usp=sharing"],
     ];
     for (const [label, href] of menuItems) {
       const link = document.createElement("a");
