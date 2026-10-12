@@ -1,0 +1,20 @@
+{
+  "pages": ["index.html", "about.html", "play.html", "respulse.html", "urban-design-system.html", "questionnaire.html"],
+  "caseStudies": ["respulse.html", "urban-design-system.html", "questionnaire.html"],
+  "widths": [1440, 900, 390],
+  "themes": ["light", "dark"],
+  "bodyFont": "Poppins",
+  "longParagraphChars": 80,
+  "minContrast": 4.5,
+  "minContrastLarge": 3,
+  "aboutCards": [".framer-fcQlC .framer-3slkwa", ".framer-fcQlC .framer-1ps5ot5", ".framer-fcQlC .framer-1lkq3pr", ".framer-fcQlC .framer-1759w0l"],
+  "allow": {
+    "body-size": [
+      { "page": "about.html", "textStartsWith": "As a maker at heart", "why": "About intro paragraphs are 16px on purpose; the philosophy cards are 14px at every width" },
+      { "page": "about.html", "textStartsWith": "Currently improving residential", "why": "About intro" },
+      { "page": "about.html", "textStartsWith": "Bachelors in Computer Science", "why": "About intro" }
+    ],
+    "contrast": [],
+    "duplicate": []
+  }
+}

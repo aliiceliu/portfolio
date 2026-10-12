@@ -5,6 +5,12 @@
   "description": "Static HTML clone of https://aliceliudesign.framer.website/",
   "scripts": {
     "preview": "npx serve .",
-    "start": "npx serve ."
+    "start": "npx serve .",
+    "build:theme": "node scripts/build-dark-theme.mjs",
+    "audit:visual": "node .claude/skills/predeploy-audit/scripts/visual.mjs",
+    "audit:functional": "node .claude/skills/predeploy-audit/scripts/functional.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.56.1"
   }
 }
