@@ -1,0 +1,102 @@
+/*
+ * Miam Miam as mascot: accessories and reactions layered on the cat (behavior in assets/js/mascot.js).
+ * The layer sits inside the cat button over its drawing and copies the drawing's animations, so a
+ * nightcap bobs and hops with the cat. Everything here is decorative and ignores the pointer.
+ */
+
+.mascot-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform-origin: 50% 100%;
+  /* Mirror the cat drawing's own animations (keyframes come from the chat component). */
+  animation: mcBob 3.8s ease-in-out infinite;
+  --mascot-ink: #8b4f2c;
+}
+.mc-cat.think .mascot-layer { animation: mcThink .5s ease-in-out infinite; }
+.mc-cat.cheer .mascot-layer { animation: mcHop .5s ease-out 2; }
+.mc-cat.pop .mascot-layer { animation: mcPop .5s cubic-bezier(.3, 1.6, .5, 1); }
+.mc-cat.munch .mascot-layer { animation: mcMunch .34s ease-in-out 6; }
+.mc-cat.snuggle .mascot-layer { animation: mcSway 1.1s ease-in-out 2; }
+.mc-cat.shrunk .mascot-layer { animation: none; }
+:root[data-theme="dark"] .mascot-layer { --mascot-ink: #f2d4a4; }
+
+.mascot-art { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+/* Nightcap: on in dark mode. */
+.mascot-cap {
+  opacity: 0;
+  transform: translateY(-34px) rotate(-8deg);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: opacity .25s ease, transform .45s cubic-bezier(.3, 1.5, .5, 1);
+}
+.mascot-layer[data-cap="on"] .mascot-cap { opacity: 1; transform: none; }
+
+/* Asleep: closed eyes + floating z's. */
+.mascot-eyes { opacity: 0; transition: opacity .2s ease; }
+.mascot-layer[data-asleep="true"] .mascot-eyes { opacity: 1; }
+.mascot-zzz {
+  position: absolute;
+  top: -14%;
+  right: -4%;
+  display: flex;
+  gap: 1px;
+  font: 700 18px/1 "Caveat", "Comic Sans MS", cursive;
+  color: var(--mascot-ink);
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.mascot-layer[data-asleep="true"] .mascot-zzz { opacity: 1; }
+.mc-root[data-mascot-asleep] .mc-bubble:not(.mascot-bubble) { display: none; }
+.mascot-zzz span { display: inline-block; animation: mascot-z 2.4s ease-in-out infinite; }
+.mascot-zzz span:nth-child(2) { font-size: 22px; animation-delay: .4s; }
+.mascot-zzz span:nth-child(3) { font-size: 26px; animation-delay: .8s; }
+@keyframes mascot-z {
+  0%, 100% { transform: translateY(4px); opacity: .35; }
+  50% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* One-shot effects: hearts and sparkles that float off the cat's head. */
+.mascot-fx {
+  position: absolute;
+  width: 26%;
+  aspect-ratio: 1;
+  pointer-events: none;
+  animation: mascot-float 1.4s ease-out forwards;
+}
+.mascot-fx svg { display: block; width: 100%; height: 100%; overflow: visible; }
+@keyframes mascot-float {
+  0% { opacity: 0; transform: translate(0, 6px) scale(.4) rotate(var(--fx-rot, 0deg)); }
+  20% { opacity: 1; transform: translate(0, 0) scale(1.1) rotate(var(--fx-rot, 0deg)); }
+  100% { opacity: 0; transform: translate(var(--fx-dx, 0px), -34px) scale(.9) rotate(var(--fx-rot, 0deg)); }
+}
+
+/* The cat's own speech bubble styling is reused (.mc-bubble); this adds room for a link. */
+/* The chat's bubble ignores the pointer; this one can hold a link, so it must be clickable. */
+.mc-root .mc-bubble.mascot-bubble { pointer-events: auto !important; text-align: left; line-height: 1.45; }
+.mascot-bubble a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.mascot-bubble a:focus-visible { outline: 2px solid var(--accent, #a4452c); outline-offset: 2px; border-radius: 4px; }
+/* On phones the bottom of the page is reserved for the footer, so the bubble sits beside the cat. */
+@media (max-width: 600px) {
+  .mc-root.right .mc-bubble.mascot-bubble {
+    bottom: calc(var(--cath) * .3);
+    right: calc(var(--cat) + 6px);
+    max-width: calc(100vw - var(--cat) - 2 * var(--edge, 20px) - 10px);
+  }
+  .mc-root.right .mc-bubble.mascot-bubble::after { right: -4px; bottom: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-layer { animation: none !important; }
+  .mascot-cap { transition: opacity .2s ease; transform: none; }
+  .mascot-zzz span { animation: none; opacity: 1; }
+  /* The chat component cuts every animation inside .mc-root to .01s here; let effects fade instead of vanishing. */
+  .mc-root .mascot-fx { animation: mascot-fade 1.4s ease-out 1 forwards !important; }
+  @keyframes mascot-fade { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
+}

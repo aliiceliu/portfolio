@@ -27,3 +27,14 @@ This folder is 100% static and ready to drag-and-drop to:
 - **Netlify** / **Vercel**
 - **GitHub Pages**
 - **Nginx / Apache** or S3 / Cloudflare Pages
+
+## 🌗 Light & Dark Mode
+The site follows the visitor's system setting until they pick a theme with the sun/moon button in the nav; that choice is remembered across pages and visits.
+
+- `assets/js/theme.js` sets `<html data-theme>` before first paint and builds the toggle.
+- `assets/css/theme.css` holds the dark palette and the hand-tuned overrides.
+- `assets/css/theme-framer-dark.css` is generated from the Framer export. After re-exporting from Framer, run:
+
+```bash
+npm run build:theme
+```

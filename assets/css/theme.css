@@ -1,0 +1,350 @@
+/*
+ * Light/dark theme. assets/js/theme.js sets <html data-theme="light|dark"> before first paint.
+ *
+ * The light theme is the original design, so it only defines the variables the nav and toggle use.
+ * The dark theme re-points Framer's color tokens and the custom components' CSS variables, and
+ * overrides the few inline colors that have no variable. Inline styles are written by React, so
+ * those overrides need !important.
+ *
+ * "Paper" objects (sticky notes, tape, the torn notebook page in the footer, the photo album's
+ * notes) stay light in dark mode on purpose: they are physical props, not UI surfaces.
+ * Every text/background pair below meets WCAG AA (4.5:1 for body text).
+ */
+
+:root {
+  --site-bg: #fff;
+  --site-hairline: rgba(0, 0, 0, .08);
+  --site-nav-text: #707070;
+  --site-nav-text-strong: #000;
+  --site-focus: #8c8c8c;
+  --toggle-fg: #6b6b6b;
+  --toggle-fg-hover: #000;
+  --toggle-bg-hover: rgba(0, 0, 0, .06);
+  --toggle-focus: #000;
+  --case-nav-text: #707070;
+}
+
+/* ---------- Light theme: contrast fixes ----------
+ * The original grays and a few accent colors fell just short of WCAG AA (4.5:1). Each is darkened
+ * only as far as needed to pass, so the design reads the same.
+ */
+[data-theme="light"] body {
+  --token-5093367f-102c-4a00-9b7f-c59906183452: #707070; /* was #8c8c8c (3.4:1): nav links, labels */
+  --token-4d9e7909-fa15-47a3-bf8f-6b82ebf480dd: #707070; /* was #999 (2.9:1) */
+  --token-84002464-baa0-40a1-a1a1-82899aec539a: #6f767b; /* was #9ba1a5 (2.6:1): "hover over cards" */
+  --token-08f4ecf8-d1a8-4232-8919-17f3581478b4: #d52222; /* was #dc2626 (4.4:1 on pink callouts) */
+  --token-8344d9ee-67dd-433e-9cc6-6958276c3bd5: #1e5eea; /* was #2563eb (4.4:1 on blue panels) */
+}
+[data-theme="light"] .ah-root { --ah-muted: #6a6d77 !important; } /* was #727680 (4.1:1 on the sticker sheet) */
+[data-theme="light"] [style*="--framer-text-color: rgb(230, 119, 0)"] { --framer-text-color: #ab5900 !important; } /* orange callout titles, was 2.8:1 */
+[data-theme="light"] [style*="--framer-text-color: rgb(153, 153, 153)"] { --framer-text-color: #707070 !important; }
+/* Case-study folder labels were faded to 60-75% opacity, which dropped them below 4.5:1 on the pastel folders. */
+.ah-root .ah-eyebrow,
+.ah-root .ah-fact dt,
+.ah-root .ah-open-link,
+.ah-root .ah-soon { opacity: .85; }
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --c-bg: #161614;          /* page */
+  --c-surface: #1f1f1d;     /* panels, cards */
+  --c-surface-2: #2a2926;   /* raised: chips, pills, inputs */
+  --c-border: rgba(255, 255, 255, .12);
+  --c-border-strong: rgba(255, 255, 255, .22);
+  --c-text: #ecebe7;        /* 15.2:1 on bg */
+  --c-text-2: #c9c8c2;      /* 10.8:1 on bg, body copy */
+  --c-text-3: #a5a49e;      /*  7.3:1 on bg, 5.8:1 on surface-2: labels, nav */
+  --c-link: #93b4ff;        /*  8.8:1 on bg */
+  --c-accent: #9bb9ff;
+  --c-image-frame: rgba(255, 255, 255, .1);
+
+  --site-bg: var(--c-bg);
+  --site-hairline: var(--c-border);
+  --site-nav-text: var(--c-text-3);
+  --site-nav-text-strong: var(--c-text);
+  --site-focus: var(--c-text-3);
+  --toggle-fg: var(--c-text-3);
+  --toggle-fg-hover: var(--c-text);
+  --toggle-bg-hover: rgba(255, 255, 255, .08);
+  --toggle-focus: var(--c-text);
+
+  /* Case-study section nav (assets/js/case-study-nav.js) */
+  --case-nav-text: var(--c-text-3);
+  --case-nav-hover: var(--c-text-2);
+  --case-nav-current: var(--c-text);
+  --case-nav-dot: rgba(255, 255, 255, .35);
+  --case-nav-focus: var(--c-text-3);
+}
+
+/* ---------- Theme toggle ---------- */
+
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--toggle-fg);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color .15s ease, background-color .15s ease;
+}
+.theme-toggle:hover { color: var(--toggle-fg-hover); background: var(--toggle-bg-hover); }
+.theme-toggle:focus-visible { outline: 2px solid var(--toggle-focus); outline-offset: 2px; }
+.theme-toggle-icon {
+  grid-area: 1 / 1;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity .2s ease, transform .3s ease;
+}
+/* The icon shows the theme you're in: sun in light mode, moon in dark mode. */
+.theme-toggle[aria-pressed="true"] .theme-toggle-sun,
+.theme-toggle[aria-pressed="false"] .theme-toggle-moon { opacity: 0; transform: rotate(-60deg) scale(.6); }
+.theme-toggle-floating { background: var(--site-bg); box-shadow: 0 0 0 1px var(--site-hairline); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle, .theme-toggle-icon { transition: none; }
+}
+@media (forced-colors: active) {
+  .theme-toggle { color: ButtonText; }
+  .theme-toggle:focus-visible { outline-color: Highlight; }
+}
+
+/* ---------- Page + Framer tokens ---------- */
+
+[data-theme="dark"] body {
+  background: var(--c-bg);
+
+  --token-2043ce05-3806-442a-952d-7e0a155a8007: var(--c-text);         /* #000 */
+  --token-57cafa93-2163-4622-9928-29fca6356745: var(--c-text);         /* #0e0e0e */
+  --token-c3561ed8-33a3-4275-b80d-0809dd94f4b8: var(--c-text);         /* #2f3646 */
+  --token-b6a223f3-2d2d-42eb-86ff-863c044594ef: var(--c-text-2);       /* #474747 */
+  --token-b56a9b1e-1dad-4db3-a9fe-8723f076a8c1: var(--c-text-2);       /* #515151 */
+  --token-9a0ff713-8ae3-4561-aeea-40233cfa1ffb: var(--c-text-2);       /* #515151 */
+  --token-5093367f-102c-4a00-9b7f-c59906183452: var(--c-text-3);       /* #8c8c8c */
+  --token-4d9e7909-fa15-47a3-bf8f-6b82ebf480dd: var(--c-text-3);       /* #999 */
+  --token-84002464-baa0-40a1-a1a1-82899aec539a: var(--c-text-3);       /* #9ba1a5 */
+  --token-b49f572e-1904-4533-90c7-79962ba22f27: var(--c-text-3);       /* #b0b0b0 */
+  --token-282a96e3-5d7b-46ac-a371-1e3c5056c98b: rgba(255, 255, 255, .55); /* #00000073 */
+
+  --token-8344d9ee-67dd-433e-9cc6-6958276c3bd5: var(--c-accent);       /* #2563eb */
+  --token-750acb16-4c5d-4a55-afd5-3ca35fa30dd1: var(--c-link);         /* #01499e */
+  --token-39f8e5e5-71d3-4c8c-b293-84accab2b107: #8fb0f5;               /* #7ea3f2 */
+  --token-08f4ecf8-d1a8-4232-8919-17f3581478b4: #ff8a8a;               /* #dc2626 */
+  --token-b3fdbd09-1ff1-4fd0-9cf4-b27072b04eaf: #6fd99a;               /* #16a34a */
+  --token-17340c31-a60b-43fd-9b24-9297cac144ce: #ecd77a;               /* #4a4102 */
+  --token-4a3925f7-d2dc-49b7-93d1-5c234dd566e9: #f8b012;
+
+  --token-90e97d3c-5ec0-4a34-81e3-31d3de6bb37f: var(--c-bg);           /* #fff */
+  --token-4c69964b-c735-4b0a-9132-1b2a997aca95: var(--c-surface);      /* #f7f7f9 */
+  --token-cb958335-365a-4e23-bc6a-a265346a3f0e: rgba(255, 255, 255, .06); /* #ffffffb3 */
+  --token-fa813b34-c78a-4979-b03d-cf94172d34ab: rgba(255, 255, 255, .08); /* #ebebebb3 */
+  --token-47677e6e-427f-48bc-8dd7-b2f301eefca9: rgba(255, 255, 255, .1);  /* #d6d6d680 */
+  --token-f42be6a7-18b4-4735-a8b4-f7cd92a1d6a9: var(--c-border-strong);   /* #c2c2c2b3 */
+  --token-e344c37f-7942-4fcc-b597-c818a4cb1b75: rgba(220, 218, 218, .35); /* tape */
+
+  /* Pastel surfaces -> dark tints of the same hue. */
+  --token-91ea2c5e-2ea4-4f00-b4bd-01074750ecd2: #1b2330;               /* #f7fcff */
+  --token-0d928372-6940-46c4-8c25-20ea6a7320fc: #1b2330;               /* #f5f9ff */
+  --token-51f763f2-72d6-4131-b7a5-ad2bc951252c: #1c2536;               /* #eff6ff */
+  --token-8eec7b1c-1640-4f8e-9144-d13db6ddc445: #1c2536;               /* #ebf4ff */
+  --token-fbfa2724-6604-4de7-83c2-d95ae3630ee9: #1e2840;               /* #e3efff */
+  --token-16628ec6-6139-4de8-bddb-e0eccf894e98: #1a2c33;               /* #e6f9ff */
+  --token-98a923db-a84c-4749-9f15-74a956231abd: rgba(80, 180, 220, .18); /* #ccf3ffb3 */
+  --token-2421ccb9-7374-4280-9fce-dec51e5a21d2: #2a3d5c;               /* #b6d8ff */
+  --token-88a38b80-6e2a-44a0-830e-4edb47f85d17: #3a4a6b;               /* #b6ccfa, card borders */
+  --token-3402ff2c-6800-477d-976a-6cd4a4be107a: #182c27;               /* #defaf6 */
+  --token-00c613c3-fe0a-4e19-b875-5b7e7724ef67: #2a3d38;               /* #ddece8 */
+  --token-0aa3c520-1852-4beb-b325-4e68e8bd95ed: rgba(110, 200, 170, .16); /* #c2ede280 */
+  --token-81b031ef-dee2-4d34-aa68-3b6f596107f3: #1a2e22;               /* #dcfce7 */
+  --token-01463c2c-37c4-4b25-be58-808e7e966051: #262037;               /* #ecdfff */
+  --token-953d5a88-ec48-43cf-944c-c896c5d0d0db: #2e1f33;               /* #fde6ff */
+  --token-20e778fa-4278-4814-a09a-8b4ac9bc1b8e: #36201f;               /* #ffe2e2 */
+  --token-f1da87da-5d01-4037-9863-86e01e12f295: #33261a;               /* #ffedd5 */
+  --token-bc1fa36f-f47e-4f18-94f3-e1d4895d1c47: rgba(249, 158, 255, .2); /* highlight marks */
+
+  /* Framer's default rich-text color when nothing more specific is set. */
+  --framer-text-color: var(--c-text);
+}
+
+/* Text presets and inline rich-text colors not covered by theme-framer-dark.css. */
+[data-theme="dark"] .framer-styles-preset-o8nc91:not(.rich-text-wrapper) { --framer-link-text-color: var(--c-link) !important; }
+[data-theme="dark"] [style*="--framer-text-color: rgb(0, 0, 0)"],
+[data-theme="dark"] [style*="--framer-text-color:#000"] { --framer-text-color: var(--c-text) !important; }
+[data-theme="dark"] [style*="--framer-text-color:#515151"] { --framer-text-color: var(--c-text-2) !important; }
+[data-theme="dark"] [style*="--framer-text-color: var(--extracted-r6o4lv, rgb(125, 125, 125))"] { --framer-text-color: var(--c-text-3) !important; }
+[data-theme="dark"] [style*="--framer-link-text-color: rgb(0, 153, 255)"] { --framer-link-text-color: var(--c-link) !important; }
+
+/* Nav: the "Alice" wordmark is a black image; its bottom hairline is a plain div. */
+[data-theme="dark"] nav.framer-xMBmL a[href*="index"] img { filter: invert(1) hue-rotate(180deg); }
+[data-theme="dark"] nav.framer-xMBmL [data-framer-name="Bottom Line"] { background-color: var(--c-border) !important; }
+
+/* About-page card dividers (the card fills come from theme-framer-dark.css). */
+[data-theme="dark"] .framer-fcQlC [data-framer-name="divider"] { color: var(--c-border-strong) !important; fill: var(--c-border-strong) !important; }
+
+/* Footer notes (.framer-TJFvs): the torn notebook page and post-it are paper, so their ink stays as designed. */
+[data-theme="dark"] .framer-TJFvs,
+[data-theme="dark"] .framer-TJFvs [style],
+[data-theme="dark"] .framer-TJFvs .framer-text {
+  --framer-text-color: #000 !important;
+  --framer-link-text-color: #0034d1 !important;
+}
+[data-theme="dark"] .framer-TJFvs [data-framer-name="post it "] .framer-text { --framer-text-color: rgb(49, 75, 205) !important; }
+
+/* Case studies: "Don't have time to read? Jump to the final solution" button. Its #222 outline vanishes
+   on the dark page, so mirror the light design's strong outline and add a faint fill at rest. */
+[data-theme="dark"] a.framer-tHlgV,
+[data-theme="dark"] a.framer-xeF2z { --border-color: var(--c-text) !important; }
+[data-theme="dark"] a.framer-tHlgV:not(:hover),
+[data-theme="dark"] a.framer-xeF2z:not(:hover) { background-color: rgba(255, 255, 255, .07) !important; }
+[data-theme="dark"] a.framer-tHlgV .framer-text,
+[data-theme="dark"] a.framer-xeF2z .framer-text { --framer-text-color: var(--c-text) !important; }
+
+/* ---------- Home (.ah-*) ---------- */
+
+[data-theme="dark"] .ah-root {
+  background: transparent !important;
+  --ah-fg: var(--c-text) !important;
+  --ah-soft: var(--c-text-2) !important;
+  --ah-muted: var(--c-text-3) !important;
+  --ah-chip: #1f3340 !important;
+  --ah-chipfg: #cfe9f8 !important;
+}
+[data-theme="dark"] .ah-sheet { background: var(--c-surface); box-shadow: 0 0 0 1px var(--c-border); }
+[data-theme="dark"] .ah-sheet-head button { border-color: var(--c-border-strong); }
+[data-theme="dark"] .ah-slot { border-color: var(--c-border-strong); }
+/* White sticker outlines read as cut-outs on dark paper too, so they stay; only the shadow deepens. */
+
+/* Case-study folders: each tab/body carries its paper (--tc/--c) and ink (--ti/--ink) inline. */
+[data-theme="dark"] .ah-root [style*="--c: #e8e8e4" i],
+[data-theme="dark"] .ah-root [style*="--tc: #e8e8e4" i] { --c: #262523 !important; --tc: #262523 !important; --ink: #e6e5df !important; --ti: #e6e5df !important; }
+[data-theme="dark"] .ah-root [style*="--c: #d1e0da" i],
+[data-theme="dark"] .ah-root [style*="--tc: #d1e0da" i] { --c: #1c2a24 !important; --tc: #1c2a24 !important; --ink: #bfe3d1 !important; --ti: #bfe3d1 !important; }
+[data-theme="dark"] .ah-root [style*="--c: #c4d8fb" i],
+[data-theme="dark"] .ah-root [style*="--tc: #c4d8fb" i] { --c: #1e2639 !important; --tc: #1e2639 !important; --ink: #c3d3ff !important; --ti: #c3d3ff !important; }
+[data-theme="dark"] .ah-root [style*="--c: #f3daad" i],
+[data-theme="dark"] .ah-root [style*="--tc: #f3daad" i] { --c: #33291c !important; --tc: #33291c !important; --ink: #f2d4a4 !important; --ti: #f2d4a4 !important; }
+[data-theme="dark"] .ah-tabbtn,
+[data-theme="dark"] .ah-folderbody,
+[data-theme="dark"] .ah-cardbody { border-color: var(--c-border); }
+[data-theme="dark"] .ah-cardbody { box-shadow: 0 -6px 14px rgba(0, 0, 0, .35); }
+[data-theme="dark"] .ah-shot { background: rgba(255, 255, 255, .06); box-shadow: 0 0 0 1px var(--c-image-frame); }
+[data-theme="dark"] .ah-shot-empty::before { background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .08) 50%, transparent 70%); }
+
+/* ---------- Play: photo album (.pa-*) ---------- */
+
+[data-theme="dark"] .pa-root {
+  --bg: transparent !important;
+  --cover: #3b3830 !important;
+  --paper: #22211d !important;
+  --ink: #ecebe7 !important;
+  --muted: #b3b2aa !important;
+  --hl: rgba(224, 180, 0, .35) !important;
+  --slot: #2e2c27 !important;
+  --slot-in: rgba(0, 0, 0, .5) !important;
+  --line: #3a3832 !important;
+  --accent: #f2c14e !important;
+}
+[data-theme="dark"] .pa-pg { background-image: radial-gradient(rgba(255, 255, 255, .07) 1px, transparent 1.2px); }
+[data-theme="dark"] .pa-cover { box-shadow: 0 0 0 1px var(--c-border), 0 18px 40px -18px rgba(0, 0, 0, .7); }
+[data-theme="dark"] .pa-cover::before { border-left-color: rgba(255, 255, 255, .22); }
+[data-theme="dark"] .pa-cover::after { border-color: rgba(255, 255, 255, .16); }
+[data-theme="dark"] .pa-slot { box-shadow: inset 0 2px 7px var(--slot-in), inset 0 -1px 0 rgba(255, 255, 255, .06); }
+[data-theme="dark"] .pa-flap {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(46, 44, 39, .85) 45%);
+  border-top-color: rgba(255, 255, 255, .14);
+}
+[data-theme="dark"] .pa-sheen { background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .08) 50%, transparent 60%); }
+[data-theme="dark"] .pa-dots button::before { background: rgba(255, 255, 255, .25); }
+[data-theme="dark"] .pa-turn:hover { background: rgba(242, 193, 78, .14); }
+/* Sticky notes are paper: keep their pastel color and dark ink. */
+[data-theme="dark"] .pa-sticky { color: #23232b; }
+[data-theme="dark"] .pa-lb.show { background: rgba(10, 10, 9, .9); }
+[data-theme="dark"] .pa-lb-cap { color: var(--c-text); }
+[data-theme="dark"] .pa-lb-cap span { color: var(--c-text-3); }
+[data-theme="dark"] .pa-lb button { background: rgba(42, 41, 38, .95); border-color: var(--c-border-strong); color: var(--c-text); }
+[data-theme="dark"] .pa-lb-img { border-color: #2a2926; }
+[data-theme="dark"] .pa-ph { background-color: #3a3832; }
+[data-theme="dark"] .pa-tip { --ink: #ecebe7; color: #161614; }
+[data-theme="dark"] .pa-tip button { color: #161614; border-color: rgba(0, 0, 0, .35); }
+[data-theme="dark"] .pa-tip button.primary { color: #23232b; }
+
+/* ---------- Cat chat (.mc-*) ---------- */
+
+[data-theme="dark"] .mc-root { --ink: #e6e8eb !important; --accent: #f0a487 !important; }
+[data-theme="dark"] .mc-bubble,
+[data-theme="dark"] .mc-bubble::after { background: var(--c-surface-2); }
+[data-theme="dark"] .mc-bubble { color: var(--c-text); box-shadow: 0 0 0 1px var(--c-border), 0 6px 18px rgba(0, 0, 0, .4); }
+[data-theme="dark"] .mc-panel { background: var(--c-surface); border-color: var(--c-border); }
+[data-theme="dark"] .mc-top span,
+[data-theme="dark"] .mc-foot { color: var(--c-text-3); }
+[data-theme="dark"] .mc-x,
+[data-theme="dark"] .mc-s,
+[data-theme="dark"] .mc-backtop,
+[data-theme="dark"] .mc-field,
+[data-theme="dark"] .mc-back { color: var(--c-text-2); }
+[data-theme="dark"] .mc-x:hover,
+[data-theme="dark"] .mc-backtop:hover { background: rgba(255, 255, 255, .08); }
+[data-theme="dark"] .mc-s:hover { color: var(--c-text); }
+[data-theme="dark"] .mc-s.fb { color: #d6c6a8; }
+[data-theme="dark"] .mc-s.play { color: #e3b585; }
+[data-theme="dark"] .mc-hi,
+[data-theme="dark"] .mc-cat-msg { color: var(--c-text); }
+[data-theme="dark"] .mc-cat-msg { background: var(--c-surface-2); border-color: var(--c-border); }
+[data-theme="dark"] .mc-me,
+[data-theme="dark"] .mc-btn { background: #dfe3e8; color: #1f2a37; }
+[data-theme="dark"] .mc-dots i { background: var(--c-text-3); }
+[data-theme="dark"] .mc-opt,
+[data-theme="dark"] .mc-mini button,
+[data-theme="dark"] .mc-pills button { background: var(--c-surface-2); color: var(--c-text); }
+[data-theme="dark"] .mc-opt:hover,
+[data-theme="dark"] .mc-mini button:hover,
+[data-theme="dark"] .mc-pills button:hover:not(:disabled),
+[data-theme="dark"] .mc-link:hover { background: #dfe3e8; color: #1f2a37; }
+[data-theme="dark"] .mc-pills,
+[data-theme="dark"] .mc-follow { border-color: var(--c-border); }
+[data-theme="dark"] .mc-link { background: var(--c-surface-2); border-color: var(--c-border-strong); color: var(--c-text); }
+[data-theme="dark"] .mc-field input,
+[data-theme="dark"] .mc-field textarea { background: var(--c-bg); border-color: var(--c-border-strong); color: var(--c-text); }
+[data-theme="dark"] .mc-err { color: #ff9b94; }
+
+/* ---------- Password screen (questionnaire, urban design system) ---------- */
+
+[data-theme="dark"] #main > div:has(#password-input) { background: var(--c-bg) !important; color: var(--c-text) !important; }
+[data-theme="dark"] #main > div:has(#password-input) main > svg { stroke: var(--c-text); }
+[data-theme="dark"] #main > div:has(#password-input) main > svg path[fill="#ffffff"] { fill: var(--c-surface-2); }
+[data-theme="dark"] #main > div:has(#password-input) h1 { color: var(--c-text) !important; }
+[data-theme="dark"] #main > div:has(#password-input) h1 > span { background: #1f3340 !important; }
+[data-theme="dark"] #password-input {
+  background: var(--c-surface) !important;
+  color: var(--c-text) !important;
+  border-color: var(--c-border-strong) !important;
+  box-shadow: 0 0 0 4px #1f3340 !important;
+}
+[data-theme="dark"] #password-input::placeholder { color: var(--c-text-3); }
+[data-theme="dark"] #password-input ~ button[type="button"] svg { fill: var(--c-text-3); }
+[data-theme="dark"] #password-input ~ button[type="submit"] { background: var(--c-text) !important; }
+[data-theme="dark"] #password-input ~ button[type="submit"] svg { fill: var(--c-bg); }
+[data-theme="dark"] #main > div:has(#password-input) main a {
+  color: var(--c-text) !important;
+  border-color: var(--c-border-strong) !important;
+}
+[data-theme="dark"] #main > div:has(#password-input) main a:hover { background-color: #1f3340 !important; }
+[data-theme="dark"] #main > div:has(#password-input) main a svg { fill: currentColor; }
+/* The recruiter note is a sticky note: paper stays light, ink stays dark. */
+[data-theme="dark"] #main > div:has(#password-input) main > div[style*="#DAF0FF" i],
+[data-theme="dark"] #main > div:has(#password-input) main > div[style*="rgb(218, 240, 255)"] { color: #17171c; }
+
+/* ---------- Images and video ---------- */
+
+/* Photos and screenshots are left untouched; a hairline frame keeps bright ones from bleeding into the page. */
+[data-theme="dark"] #main video,
+[data-theme="dark"] .pa-slot img { box-shadow: 0 0 0 1px var(--c-image-frame); }

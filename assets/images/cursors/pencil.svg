@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Hand-drawn pencil cursor. Hotspot: the graphite tip at (3, 3). -->
+  <g transform="translate(3 3) rotate(45)" stroke-linejoin="round" stroke-linecap="round">
+    <!-- white halo so the outline reads on dark pages -->
+    <path d="M0 0 L10 -4.6 H30.5 Q34 -4.6 34 -1.6 V1.6 Q34 4.6 30.5 4.6 H10 Z" fill="#fff" stroke="#fff" stroke-width="3.6"/>
+    <path d="M0 0 L10 -4.6 V4.6 Z" fill="#f6dcb4"/>
+    <path d="M0 0 L4.4 -2 V2 Z" fill="#222"/>
+    <rect x="10" y="-4.6" width="17" height="9.2" fill="#f2c94c"/>
+    <path d="M10 -1.5 H27 M10 1.5 H27" stroke="#d9a520" stroke-width="0.9"/>
+    <rect x="27" y="-4.6" width="3.2" height="9.2" fill="#c9ced6"/>
+    <path d="M30.2 -4.6 H31 Q34 -4.6 34 -1.6 V1.6 Q34 4.6 31 4.6 H30.2 Z" fill="#f4a3b3"/>
+    <path d="M0 0 L10 -4.6 H31 Q34 -4.6 34 -1.6 V1.6 Q34 4.6 31 4.6 H10 Z M10 -4.6 V4.6 M27 -4.6 V4.6 M30.2 -4.6 V4.6" fill="none" stroke="#222" stroke-width="1.4"/>
+  </g>
+</svg>

@@ -1,0 +1,88 @@
+/*
+ * Microinteractions in the "maker's scrapbook" spirit: a pencil cursor on paper and click stamps.
+ * Behavior lives in assets/js/delight.js. Nothing here changes layout or blocks interaction.
+ */
+
+/* ---------- Pencil cursor on paper ----------
+ * The site uses the system cursor, apart from the Smiskis that replace it over the About cards
+ * (below). Only the paper props (footer contact notes, the photo album on
+ * Play) switch to a hand-drawn pencil, as if you could write on them.
+ * Links and buttons on the paper keep the normal pointer so they still read as clickable.
+ * The PNGs keep the pencil sharp on retina screens; "auto" is the fallback if they can't load.
+ */
+.framer-TJFvs,
+.pa-cover {
+  cursor: url("../images/cursors/pencil.png") 3 3, auto;
+  cursor: image-set(url("../images/cursors/pencil.png") 1x, url("../images/cursors/pencil@2x.png") 2x) 3 3, auto;
+}
+/* The footer post-it kept Framer's grab cursor after dragging was removed. */
+.framer-TJFvs [data-framer-name="Sticky note"],
+.framer-TJFvs [data-framer-name="Sticky note"] * { cursor: inherit !important; }
+.framer-TJFvs :is(a[href], button),
+.pa-cover :is(a[href], button) { cursor: pointer; }
+/* Framer gave the whole Play page a grab cursor although nothing there drags. */
+html .framer-marxX.framer-1ncmozy { cursor: auto; }
+
+/* High-contrast modes: system cursor only. */
+@media (forced-colors: active) {
+  .framer-TJFvs,
+  .pa-cover { cursor: auto; }
+}
+
+/* Framer's old blue cursor dot. The runtime no longer renders it, but a browser holding an older
+   cached copy of the runtime could; delight.js also undoes the class that hid the real cursor. */
+.framer-WlvoJ { display: none !important; }
+
+/* ---------- Smiskis on the About cards ----------
+ * delight.js moves the drawing with the mouse; it sits above the page and click stamps, below the
+ * nav and the cat chat, and never takes the pointer.
+ */
+.smiski-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147482950;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  transition: opacity .2s ease;
+  will-change: transform;
+}
+.smiski-cursor.is-visible { opacity: 1; }
+.smiski-hover,
+.smiski-hover * { cursor: none !important; }
+
+/* ---------- Click stamps ---------- */
+
+.stamp-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 2147482900; /* above page content, below the nav, menus and the cat chat */
+  overflow: hidden;
+  pointer-events: none;
+}
+.stamp {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  /* Die-cut sticker edge, matching the sticker sheet on the home page. */
+  filter: drop-shadow(1.5px 0 0 #fff) drop-shadow(-1.5px 0 0 #fff) drop-shadow(0 1.5px 0 #fff) drop-shadow(0 -1.5px 0 #fff) drop-shadow(0 2px 3px rgba(0, 0, 0, .25));
+  animation: stamp-pop 1.5s cubic-bezier(.2, .8, .2, 1) forwards;
+}
+.stamp svg { display: block; width: 100%; height: 100%; overflow: visible; }
+@keyframes stamp-pop {
+  0% { opacity: 0; transform: rotate(var(--stamp-rot)) scale(.35); }
+  16% { opacity: 1; transform: rotate(var(--stamp-rot)) scale(1.15); }
+  28% { transform: rotate(var(--stamp-rot)) scale(1); }
+  70% { opacity: 1; transform: rotate(var(--stamp-rot)) scale(1) translateY(0); }
+  100% { opacity: 0; transform: rotate(var(--stamp-rot)) scale(.92) translateY(-10px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stamp { animation-name: stamp-fade; }
+  @keyframes stamp-fade {
+    0%, 60% { opacity: 1; transform: rotate(var(--stamp-rot)); }
+    100% { opacity: 0; transform: rotate(var(--stamp-rot)); }
+  }
+}
