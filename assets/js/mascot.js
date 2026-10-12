@@ -282,7 +282,7 @@
     const link = event.target instanceof Element && event.target.closest("a[href]");
     if (!link || link.closest(".mascot-bubble")) return;
     const href = link.getAttribute("href") || "";
-    const isResume = /drive\.google\.com/.test(href) || /resume/i.test(link.textContent);
+    const isResume = /resume[^/]*\.pdf$/i.test(href) || /resume/i.test(link.textContent);
     const isContact = /^mailto:|linkedin\.com/i.test(href);
     if (!isResume && !isContact) return;
     hop();

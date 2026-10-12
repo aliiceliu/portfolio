@@ -16,7 +16,7 @@ const types = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css",
   ".json": "application/json", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
   ".webp": "image/webp", ".avif": "image/avif", ".gif": "image/gif", ".woff2": "font/woff2", ".woff": "font/woff",
-  ".mp4": "video/mp4", ".webm": "video/webm", ".ico": "image/x-icon",
+  ".mp4": "video/mp4", ".pdf": "application/pdf", ".webm": "video/webm", ".ico": "image/x-icon",
 };
 
 export function startServer() {
