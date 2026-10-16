@@ -304,4 +304,10 @@
       }
     }, 350);
   }, true);
+
+  // ---------- For other scripts (night-stickers.js) ----------
+  // Lets other delights make the cat react without duplicating its bubble and animation rules.
+  // hushUnprompted: the visitor is busy with something else (e.g. the sticker hunt), so skip this
+  // page's unprompted bubble instead of letting it cover a reaction.
+  window.miamMascot = { say, sayOnce, hop, burst, wobble, hushUnprompted: () => { unpromptedUsed = true; } };
 })();

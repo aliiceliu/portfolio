@@ -1,0 +1,127 @@
+/*
+ * Sticker hunt (behavior in assets/js/sticker-hunt.js). Each page's hidden sticker sits faint (about
+ * a quarter visible); --near (0 to 1, from the mouse's distance) brings it out:
+ *  - day stickers fade in and curl their bottom-right corner up, like a sticker starting to peel;
+ *  - night stickers fade in with a soft green glow, like glow-in-the-dark plastic.
+ */
+.hunt-sticker {
+  --near: 0;
+  position: absolute;
+  z-index: 2147482700; /* above page content, below the nav, the cat and its chat */
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: opacity .25s ease, transform .25s ease, filter .25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.hunt-sticker svg { display: block; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.hunt-sticker:focus-visible { outline: 2px dashed currentColor; outline-offset: 4px; border-radius: 12px; }
+
+/* Day: stuck flat and faint; near the mouse the top-left stays put while the opposite corner lifts. */
+.hunt-sticker--day {
+  color: #444;
+  opacity: calc(.28 + .72 * var(--near));
+  transform-origin: 18% 18%;
+  transform: perspective(220px) rotate(-6deg) rotateX(calc(-26deg * var(--near))) rotateY(calc(22deg * var(--near)));
+  filter:
+    drop-shadow(1.5px 0 0 #fff) drop-shadow(-1.5px 0 0 #fff) drop-shadow(0 1.5px 0 #fff) drop-shadow(0 -1.5px 0 #fff)
+    drop-shadow(calc(1px + 5px * var(--near)) calc(1px + 7px * var(--near)) calc(1px + 6px * var(--near)) rgba(0, 0, 0, calc(.08 + .22 * var(--near))));
+}
+
+/* Night: glow-in-the-dark. */
+.hunt-sticker--night {
+  color: rgba(170, 255, 200, .8);
+  opacity: calc(.22 + .78 * var(--near));
+  transform: scale(calc(.9 + .1 * var(--near))) rotate(-8deg);
+  filter: drop-shadow(0 0 calc(3px + 10px * var(--near)) rgba(170, 255, 200, calc(.3 + .55 * var(--near))));
+}
+
+/* Touch screens have no hover: day stickers curl up now and then, night stickers breathe. */
+.hunt-sticker--touch.hunt-sticker--day { animation: hunt-curl 6s ease-in-out infinite; }
+.hunt-sticker--touch.hunt-sticker--night { animation: hunt-pulse 5s ease-in-out infinite; }
+@keyframes hunt-curl {
+  0%, 70%, 100% { --near: .15; }
+  82%, 88% { --near: .85; }
+}
+@keyframes hunt-pulse {
+  0%, 100% { --near: .1; }
+  50% { --near: .5; }
+}
+@property --near { syntax: "<number>"; inherits: true; initial-value: 0; }
+
+/* ---------- The hunt row on Home's sticker sheet (rendered by the sheet component) ----------
+ * Small dotted circles under the caption, behind a dashed divider; found stickers sit in them and can
+ * be dragged out like any other sticker. Scoped under .ah-sheet to beat the component's .ah-slot rules.
+ */
+.ah-sheet .ah-hunt-slots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #cfd2d9;
+}
+.ah-sheet .ah-hunt-slot {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  aspect-ratio: auto;
+  border-radius: 50%;
+}
+.ah-sheet .ah-hunt-slot .ah-sticker { --s: 30px; }
+/* Empty night slots carry a faint moon, a hint that those stickers come out in the dark. */
+.ah-hunt-slot[data-set="night"]:empty::after {
+  content: "\263E";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  color: #b9bdc7;
+}
+.ah-hunt-art { display: block; width: 100%; height: 100%; }
+[data-theme="dark"] .ah-sheet .ah-hunt-slots { border-top-color: rgba(255, 255, 255, .14); }
+[data-theme="dark"] .ah-hunt-slot[data-set="night"]:empty::after { color: rgba(170, 255, 200, .45); }
+
+/* ---------- Hunt progress chip in the sheet header ----------
+ * The caption is easy to skim past, so the count also sits up top as a small pill. It shimmers once
+ * after the page settles, then stays quiet; at 6/6 it turns green.
+ */
+.ah-sheet-title { display: inline-flex; align-items: center; gap: 7px; }
+.ah-hunt-chip {
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #e6e8ee;
+  color: #4f535e;
+  font: inherit;
+  letter-spacing: .06em;
+  white-space: nowrap;
+  background-image: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .85) 50%, transparent 70%);
+  background-size: 250% 100%;
+  background-position: 120% 0;
+  background-repeat: no-repeat;
+  animation: hunt-chip-shimmer 1.4s ease-in-out 2.2s 1 both;
+}
+.ah-hunt-chip[data-done="true"] { background-color: #d9f5e3; color: #24613d; }
+[data-theme="dark"] .ah-hunt-chip { background-color: rgba(255, 255, 255, .1); color: #c9c8c2; background-image: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .22) 50%, transparent 70%); }
+[data-theme="dark"] .ah-hunt-chip[data-done="true"] { background-color: rgba(120, 220, 160, .18); color: #a8f0c4; }
+@keyframes hunt-chip-shimmer {
+  from { background-position: 120% 0; }
+  to { background-position: -120% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hunt-sticker { transition: opacity .2s ease; }
+  .hunt-sticker--day { transform: rotate(-6deg); }
+  .hunt-sticker--night { transform: rotate(-8deg); }
+  .hunt-sticker--touch { animation: none !important; --near: .3; }
+  .ah-hunt-chip { animation: none; }
+}
+@media (forced-colors: active) {
+  .hunt-sticker { display: none !important; }
+}

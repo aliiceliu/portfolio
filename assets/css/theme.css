@@ -333,6 +333,8 @@
 [data-theme="dark"] #password-input ~ button[type="button"] svg { fill: var(--c-text-3); }
 [data-theme="dark"] #password-input ~ button[type="submit"] { background: var(--c-text) !important; }
 [data-theme="dark"] #password-input ~ button[type="submit"] svg { fill: var(--c-bg); }
+/* The arrow is drawn with strokes, not fills, so it needs its own rule to go dark on the light button. */
+[data-theme="dark"] #password-input ~ button[type="submit"] svg :is(line, polyline, path) { stroke: var(--c-bg); }
 [data-theme="dark"] #main > div:has(#password-input) main a {
   color: var(--c-text) !important;
   border-color: var(--c-border-strong) !important;
