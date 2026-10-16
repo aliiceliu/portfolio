@@ -29,7 +29,22 @@
     <script defer src="./assets/js/delight.js?v=6"></script>
     <script defer src="./assets/js/mascot.js?v=9"></script>
     <script type="module" src="./assets/js/mascot-mount.js?v=1"></script>
-    <script defer src="./assets/js/case-study-nav.js?v=7"></script>
+    <style id="cs-next-styles">
+      /* "What's next?" section, placed at the end of Reflection's text column. Matches Reflection's type
+         and colors, and sits 96px below Reflection like it does on Property Onboarding. */
+      .cs-next { box-sizing: border-box; width: 100%; padding-top: 40px; }  /* + the 24px column gap + 32px below Reflection's last paragraph = 96px */
+      .cs-next__label { margin: 0 0 4px; font: 700 12px/1.2 "Playfair Display", serif; letter-spacing: .1em; text-transform: uppercase; color: var(--token-b6a223f3-2d2d-42eb-86ff-863c044594ef, rgb(71, 71, 71)); }
+      .cs-next__title { margin: 0 0 8px; font: 600 26px/1.2 "Playfair Display", serif; color: #000; }
+      .cs-next__body { margin: 0 0 16px; font: 400 16px/1.5 Poppins, sans-serif; color: var(--token-b56a9b1e-1dad-4db3-a9fe-8723f076a8c1, rgb(81, 81, 81)); }
+      .cs-next__body:last-child { margin-bottom: 0; }
+      .cs-next mark { background: var(--token-0aa3c520-1852-4beb-b325-4e68e8bd95ed, rgba(194, 237, 226, .5)); color: inherit; padding: 0 .1em; }
+      [data-theme="dark"] .cs-next__title { color: var(--c-text); }
+      @media (max-width: 809.98px) {
+        .cs-next__title { font-size: 28px; }
+        .cs-next__body { font-size: 14px; }
+      }
+    </style>
+    <script defer src="./assets/js/case-study-nav.js?v=9"></script>
 	
 	<style data-framer-font-css="">/* cyrillic */
 @font-face {

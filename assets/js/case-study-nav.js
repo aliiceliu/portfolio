@@ -18,6 +18,7 @@
         ["Where are we now", "uds-where-are-we-now"],
         ["Final Solution", "uds-final-solution"],
         ["Reflection", "uds-reflections-1"],
+        ["What's next", "uds-whats-next"],
       ],
     },
     {
@@ -36,6 +37,7 @@
         ["Design", "questionnaire-design"],
         ["Final Solution", "questionnaire-final-solution"],
         ["Reflection", "questionnaire-reflections"],
+        ["What's next", "questionnaire-whats-next"],
       ],
     },
   ];

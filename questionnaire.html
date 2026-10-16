@@ -29,7 +29,41 @@
     <script defer src="./assets/js/delight.js?v=6"></script>
     <script defer src="./assets/js/mascot.js?v=9"></script>
     <script type="module" src="./assets/js/mascot-mount.js?v=1"></script>
-    <script defer src="./assets/js/case-study-nav.js?v=7"></script>
+    <style id="cs-next-styles">
+      /* "What's next?" section, placed inside Reflection after its content (so on phones it comes before
+         the Previous Project card that also lives there). Matches Reflection's type, colors and text column. */
+      .framer-mu8mU .framer-8tmhsm:has(> .cs-next) { flex-wrap: wrap; }  /* desktop/tablet lay Reflection out as a row */
+      .cs-next { box-sizing: border-box; flex: 0 0 100%; padding: 76px 5% 16px; }  /* 76px + the 20px row gap = the 96px between sections; Reflection's text column is 90% wide */
+      .cs-next__label { margin: 0 0 4px; font: 700 12px/1.2 "Playfair Display", serif; letter-spacing: .1em; text-transform: uppercase; color: var(--token-b6a223f3-2d2d-42eb-86ff-863c044594ef, rgb(71, 71, 71)); }
+      .cs-next__title { margin: 0 0 8px; font: 600 26px/1.2 "Playfair Display", serif; color: #000; }
+      .cs-next__body { margin: 0 0 16px; font: 400 16px/1.5 Poppins, sans-serif; color: var(--token-b56a9b1e-1dad-4db3-a9fe-8723f076a8c1, rgb(81, 81, 81)); }
+      .cs-next__body:last-child { margin-bottom: 0; }
+      .cs-next mark { background: var(--token-16628ec6-6139-4de8-bddb-e0eccf894e98, rgb(230, 249, 255)); color: inherit; padding: 0 .1em; }
+      [data-theme="dark"] .cs-next__title { color: var(--c-text); }
+
+      /* Final Solution matches Urban Design System's: grey lines across the section's top and bottom,
+         64px between each line and the card (32px on phones), and 64px from the bottom line to the
+         Reflection label (32px on phones). The doubled class outranks Framer's own rules, which load later. */
+      .framer-mu8mU .framer-95o7ok.framer-95o7ok { padding: 64px 0; }
+      .framer-mu8mU .framer-95o7ok::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-top: 1px solid rgba(194, 194, 194, .7);
+        border-bottom: 1px solid rgba(194, 194, 194, .7);
+        pointer-events: none;
+      }
+      [data-theme="dark"] .framer-mu8mU .framer-95o7ok::before { border-color: rgba(255, 255, 255, .22); }  /* UDS's line color in dark mode */
+      .framer-mu8mU .framer-8tmhsm.framer-8tmhsm { padding-top: 64px; }
+      @media (max-width: 809.98px) {
+        .framer-mu8mU .framer-95o7ok.framer-95o7ok { padding: 32px 0; }
+        .framer-mu8mU .framer-8tmhsm.framer-8tmhsm { padding-top: 32px; }
+        .cs-next { padding-top: 48px; padding-bottom: 0; }  /* + the 48px column gap = 96px */
+        .cs-next__title { font-size: 28px; }
+        .cs-next__body { font-size: 14px; }
+      }
+    </style>
+    <script defer src="./assets/js/case-study-nav.js?v=9"></script>
 	
 	<style data-framer-font-css="">/* cyrillic */
 @font-face {
